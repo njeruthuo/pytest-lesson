@@ -1,3 +1,4 @@
+import dj_database_url
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -53,31 +54,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'school.wsgi.application'
 
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME":  os.getenv("DATABASE_NAME"),
+        "USER": os.getenv("DATABASE_USER"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+        "HOST": os.getenv("DATABASE_HOST"),
+        "PORT": os.getenv("DATABASE_PORT"),
+    }
+}
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 if os.getenv("GITHUB_ACTIONS"):
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "test_db",
-            "USER": "postgres",
-            "PASSWORD": "postgres",
-            "HOST": "localhost",
-            "PORT": "5432",
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME":  os.getenv("DATABASE_NAME"),
-            "USER": os.getenv("DATABASE_USER"),
-            "PASSWORD": os.getenv("DATABASE_PASSWORD"),
-            "HOST": os.getenv("DATABASE_HOST"),
-            "PORT": os.getenv("DATABASE_PORT"),
-        }
-    }
+    DATABASES["default"] = dj_database_url.config(
+        default="postgres://postgres:postgres@localhost:5432/test_db")
+
 
 
 AUTH_PASSWORD_VALIDATORS = [
